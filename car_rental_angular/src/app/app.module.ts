@@ -13,13 +13,7 @@ import en from '@angular/common/locales/en';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
-// NG ZORRO IMPORTS
-import { NzSpinModule } from 'ng-zorro-antd/spin';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NgZorroImportsModule } from './NgZorroImportsModule';
 
 registerLocaleData(en);
 
@@ -37,11 +31,8 @@ registerLocaleData(en);
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    NzSpinModule,
-    NzFormModule,
-    NzButtonModule,
-    NzInputModule,
-    NzLayoutModule,
+    NgZorroImportsModule
+
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US }
