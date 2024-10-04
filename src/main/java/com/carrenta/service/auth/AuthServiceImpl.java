@@ -16,16 +16,16 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDto createCustomer(SignupRequest signupRequest) {
-        User user = new User ();
+    public UserDto createUser(SignupRequest signupRequest, UserRole role) {
+        User user = new User();
         user.setName(signupRequest.getName());
         user.setEmail(signupRequest.getEmail());
         user.setPassword(new BCryptPasswordEncoder().encode(signupRequest.getPassword()));
-        user.setUserRole(UserRole.CUSTOMER);
+        user.setUserRole(role);
         User createdUser = userRepository.save(user);
-        UserDto userDto = new UserDto();
-        userDto.setId(createdUser.getId());
-        return userDto;
+
+        return UserDto.convertUserToUserDto(createdUser);
+
     }
 
     @Override

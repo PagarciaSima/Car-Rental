@@ -5,6 +5,7 @@ import com.carrenta.dto.AuthenticationResponse;
 import com.carrenta.dto.SignupRequest;
 import com.carrenta.dto.UserDto;
 import com.carrenta.entity.User;
+import com.carrenta.enums.UserRole;
 import com.carrenta.repository.UserRepository;
 import com.carrenta.service.auth.AuthService;
 import com.carrenta.service.jwt.UserService;
@@ -18,10 +19,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -37,17 +35,32 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> signupCustomer(@RequestBody SignupRequest signupRequest){
+    @PostMapping("/signup/{role}")
+    public ResponseEntity<?> signupUser(
+            @RequestBody SignupRequest signupRequest,
+            @PathVariable("role") String role
+    ) {
+        // Validar si el email ya existe
         if (authService.hasCustomerWithEmail(signupRequest.getEmail())) {
-            return new ResponseEntity<>("Customer already exist with this email", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("User already exists with this email", HttpStatus.NOT_ACCEPTABLE);
         }
-        UserDto createdCustomerDto = authService.createCustomer(signupRequest);
 
-        if(createdCustomerDto == null) {
-            return new ResponseEntity<>("Customer not created, try again later", HttpStatus.BAD_REQUEST);
+        UserRole userRole;
+        if ("admin".equalsIgnoreCase(role)) {
+            userRole = UserRole.ADMIN;
+        } else if ("customer".equalsIgnoreCase(role)) {
+            userRole = UserRole.CUSTOMER;
+        } else {
+            return new ResponseEntity<>("Invalid role specified", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(createdCustomerDto, HttpStatus.CREATED);
+
+        // Crear el usuario
+        UserDto createdUserDto = authService.createUser(signupRequest, userRole);
+        if (createdUserDto == null) {
+            return new ResponseEntity<>("User not created, try again later", HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(createdUserDto, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
