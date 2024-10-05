@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AdminDashboardComponent } from './admin/components/admin-dashboard/admin-dashboard.component';
 import { LoginComponent } from './auth/components/login/login.component';
 import { SignupComponent } from './auth/components/signup/signup.component';
 import { NZ_I18N } from 'ng-zorro-antd/i18n';
@@ -20,7 +19,6 @@ registerLocaleData(en);
 @NgModule({
   declarations: [
     AppComponent,
-    AdminDashboardComponent,
     LoginComponent,
     SignupComponent
   ],
