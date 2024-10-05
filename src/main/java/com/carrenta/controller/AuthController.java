@@ -40,7 +40,6 @@ public class AuthController {
             @RequestBody SignupRequest signupRequest,
             @PathVariable("role") String role
     ) {
-        // Validar si el email ya existe
         if (authService.hasCustomerWithEmail(signupRequest.getEmail())) {
             return new ResponseEntity<>("User already exists with this email", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -54,7 +53,6 @@ public class AuthController {
             return new ResponseEntity<>("Invalid role specified", HttpStatus.BAD_REQUEST);
         }
 
-        // Crear el usuario
         UserDto createdUserDto = authService.createUser(signupRequest, userRole);
         if (createdUserDto == null) {
             return new ResponseEntity<>("User not created, try again later", HttpStatus.BAD_REQUEST);
