@@ -10,43 +10,40 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
 
-    private static final Logger logger = LoggerFactory.getLogger(AdminServiceImpl.class);
     private final CarRepository carRepository;
 
     @Override
-    public Car postCar(CarDto carDto, MultipartFile image) {
-        try {
-            Car car = getCarFromDto(carDto, image);
-            return carRepository.save(car);
-        } catch (IOException e) {
-            logger.error("Error processing car data: {}", e.getMessage());
-            return null;
-        }
-    }
-
-    private Car getCarFromDto(CarDto carDto, MultipartFile image) throws IOException {
+    public Car postCar(CarDto carDto, MultipartFile image) throws IOException {
         Car car = new Car();
-        car.setName(carDto.getName());
         car.setBrand(carDto.getBrand());
         car.setColor(carDto.getColor());
+        car.setName(carDto.getName());
+        car.setType(carDto.getType());
+        car.setTransmission(carDto.getTransmission());
+        car.setDescription(carDto.getDescription());
         car.setPrice(carDto.getPrice());
         car.setYear(carDto.getYear());
-        car.setType(carDto.getType());
-        car.setDescription(carDto.getDescription());
-        car.setTransmission(carDto.getTransmission());
 
-        // Procesar el archivo de imagen si está presente
         if (image != null && !image.isEmpty()) {
-            car.setImage(image.getBytes());  // Guardar la imagen como byte array
-        } else {
-            logger.warn("Car image is missing for car: {}", carDto.getName());
-            car.setImage(null);
+            car.setImage(image.getBytes());
         }
-        return car;
+
+        return carRepository.save(car);
     }
+
+    @Override
+    public List<CarDto> getAllCars() {
+        return carRepository.findAll()
+                .stream()
+                .map(Car::getCarDto)
+                .collect(Collectors.toList());
+    }
+
 }

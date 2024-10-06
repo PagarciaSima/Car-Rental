@@ -26,7 +26,7 @@ public class AdminController {
         try {
             Car createdCar = adminService.postCar(carDto, image);
             if (createdCar != null) {
-                return ResponseEntity.status(HttpStatus.CREATED).body(createdCar);
+                return ResponseEntity.status(HttpStatus.CREATED).body(createdCar.getCarDto());
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Car could not be created.");
             }
@@ -34,5 +34,10 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred while processing the request.");
         }
+    }
+
+    @GetMapping("/cars")
+    public ResponseEntity<?> getAllCars() {
+        return ResponseEntity.ok(adminService.getAllCars());
     }
 }

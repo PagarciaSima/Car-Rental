@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { User } from '../../../models/user.model';
+import { jwtDecode } from "jwt-decode";
 
 const TOKEN = "token";
 const USER = "user";
@@ -50,5 +51,13 @@ export class StorageService {
   static logout(): void {
     localStorage.removeItem(TOKEN);
     localStorage.removeItem(USER);
+  }
+
+  static isTokenExpired(): boolean {
+    const token = this.getToken();
+    if (!token) return true;
+
+    const decoded: any = jwtDecode(token); // Decodifica el token
+    return decoded.exp * 1000 < Date.now(); // Verifica si ha expirado
   }
 }

@@ -26,7 +26,5 @@ public class CarDto {
 
     private Date year;
 
-    private MultipartFile image;
-
     private byte[] returnedImage;
 }

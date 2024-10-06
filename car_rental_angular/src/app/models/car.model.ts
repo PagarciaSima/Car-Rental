@@ -1,4 +1,5 @@
 export interface CarDto {
+  processedImg: string;
   id?: number;               // El signo de interrogación indica que es opcional
   brand: string;
   color: string;

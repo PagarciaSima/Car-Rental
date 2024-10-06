@@ -1,8 +1,11 @@
 package com.carrenta.entity;
 
+import com.carrenta.dto.CarDto;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Date;
 
 @Entity
@@ -33,4 +36,24 @@ public class Car {
     @Column(columnDefinition = "longblob")
     private byte [] image;
 
+    public CarDto getCarDto() {
+        CarDto carDto = new CarDto();
+        carDto.setId(id);
+        carDto.setName(name);
+        carDto.setBrand(brand);
+        carDto.setColor(color);
+        carDto.setType(type);
+        carDto.setTransmission(transmission);
+        carDto.setDescription(description);
+        carDto.setPrice(price);
+        carDto.setYear(year);
+        carDto.setReturnedImage(image);
+        return carDto;
+    }
+
+    public void setImageFromMultipartFile(MultipartFile imageFile) throws IOException {
+        if (imageFile != null && !imageFile.isEmpty()) {
+            this.image = imageFile.getBytes();
+        }
+    }
 }

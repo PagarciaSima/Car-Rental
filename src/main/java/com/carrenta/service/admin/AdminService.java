@@ -5,8 +5,10 @@ import com.carrenta.entity.Car;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface AdminService {
 
     Car postCar(CarDto carDto, MultipartFile image) throws IOException;
+    List<CarDto> getAllCars();
 }
