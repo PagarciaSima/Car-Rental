@@ -4,9 +4,10 @@ import com.carrenta.dto.CarDto;
 import com.carrenta.entity.Car;
 import com.carrenta.repository.CarRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -18,18 +19,17 @@ public class AdminServiceImpl implements AdminService {
     private final CarRepository carRepository;
 
     @Override
-    public Car postCar(CarDto carDto) {
+    public Car postCar(CarDto carDto, MultipartFile image) {
         try {
-            Car car = getCarFromDto(carDto);
+            Car car = getCarFromDto(carDto, image);
             return carRepository.save(car);
-
         } catch (IOException e) {
             logger.error("Error processing car data: {}", e.getMessage());
             return null;
         }
     }
 
-    private Car getCarFromDto(CarDto carDto) throws IOException {
+    private Car getCarFromDto(CarDto carDto, MultipartFile image) throws IOException {
         Car car = new Car();
         car.setName(carDto.getName());
         car.setBrand(carDto.getBrand());
@@ -40,8 +40,9 @@ public class AdminServiceImpl implements AdminService {
         car.setDescription(carDto.getDescription());
         car.setTransmission(carDto.getTransmission());
 
-        if (carDto.getImage() != null) {
-            car.setImage(carDto.getImage().getBytes());
+        // Procesar el archivo de imagen si está presente
+        if (image != null && !image.isEmpty()) {
+            car.setImage(image.getBytes());  // Guardar la imagen como byte array
         } else {
             logger.warn("Car image is missing for car: {}", carDto.getName());
             car.setImage(null);

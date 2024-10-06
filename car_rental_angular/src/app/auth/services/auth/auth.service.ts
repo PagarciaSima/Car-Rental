@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { LoginRequest, LoginResponse, SignupRequest, SignupResponse } from '../../models/auth.model';
+import { LoginRequest, LoginResponse, SignupRequest, SignupResponse } from '../../../models/auth.model';
 
 const BASE_URL = "http://localhost:8081";
 

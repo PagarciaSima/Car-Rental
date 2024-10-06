@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { StorageService } from '../../services/storage/storage.service';
-import { User } from '../../models/user.model';
+import { User } from '../../../models/user.model';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({

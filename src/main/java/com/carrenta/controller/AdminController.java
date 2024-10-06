@@ -3,12 +3,12 @@ package com.carrenta.controller;
 import com.carrenta.dto.CarDto;
 import com.carrenta.entity.Car;
 import com.carrenta.service.admin.AdminService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -19,13 +19,12 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    @Operation(summary = "Create a new car")
-    @ApiResponse(responseCode = "201", description = "Car created successfully")
-    @ApiResponse(responseCode = "400", description = "Car could not be created")
-    @PostMapping("/car")
-    public ResponseEntity<?> postCar(@RequestBody CarDto carDto) {
+    @PostMapping(value = "/car", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> postCar(
+            @RequestPart("car") CarDto carDto,
+            @RequestPart(value = "image", required = false) MultipartFile image) {
         try {
-            Car createdCar = adminService.postCar(carDto);
+            Car createdCar = adminService.postCar(carDto, image);
             if (createdCar != null) {
                 return ResponseEntity.status(HttpStatus.CREATED).body(createdCar);
             } else {

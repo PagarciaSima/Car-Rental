@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { AdminService } from '../../service/admin.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-post-card',
-  templateUrl: './post-card.component.html',
-  styleUrls: ['./post-card.component.scss']
+  selector: 'app-post-car',
+  templateUrl: './post-car.component.html',
+  styleUrls: ['./post-car.component.scss']
 })
-export class PostCardComponent implements OnInit {
+export class PostCarComponent implements OnInit {
   postCarForm!: FormGroup;
   isSpinning: boolean = false;
   selectedFile: File | null = null;
@@ -17,7 +20,12 @@ export class PostCardComponent implements OnInit {
   listOfColor = ["Red", "White", "Blue", "Black", "Orange", "Grey", "Silver"];
   listOfTransmission = ["Manual", "Automatic"];
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private adminService: AdminService,
+    private message: NzMessageService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.postCarForm = this.formBuilder.group({
@@ -34,23 +42,34 @@ export class PostCardComponent implements OnInit {
 
   postCar(): void {
     console.log(this.postCarForm.value);
-    const formData: FormData = new FormData();
-    if (this.selectedFile) {
-      formData.append('img', this.selectedFile, this.selectedFile.name);
-    } else {
-      console.error('No file selected!');
-    }
-    formData.append('brand', this.postCarForm.get('brand')!.value);
-    formData.append('name', this.postCarForm.get('name')!.value);
-    formData.append('type', this.postCarForm.get('type')!.value);
-    formData.append('color', this.postCarForm.get('color')!.value);
-    formData.append('year', this.postCarForm.get('year')!.value);
-    formData.append('transmission', this.postCarForm.get('transmission')!.value);
-    formData.append('description', this.postCarForm.get('description')!.value);
-    formData.append('price', this.postCarForm.get('price')!.value);
-    console.log(formData);
+    this.isSpinning = true;
 
+    const formData: FormData = new FormData();
+
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile, this.selectedFile.name);
+    }
+
+    const carDto = JSON.stringify(this.postCarForm.value);
+    formData.append('car', new Blob([carDto], { type: 'application/json' }));
+
+    console.log(formData);
+    this.adminService.postCar(formData).subscribe({
+      next: (res) => {
+        this.message.success("Car posted successfully", { nzDuration: 5000 });
+        console.log(res);
+        this.router.navigate(['/admin/dashboard']);
+      },
+      error: (err) => {
+        this.message.error("Error while posting car", { nzDuration: 5000 });
+        console.log(err);
+      },
+      complete: () => {
+        this.isSpinning = false;
+      }
+    });
   }
+
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;

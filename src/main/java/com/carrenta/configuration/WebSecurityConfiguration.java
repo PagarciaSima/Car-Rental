@@ -32,16 +32,6 @@ public class WebSecurityConfiguration {
     private final UserService userService;
 
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring()
-                .requestMatchers("/api/auth/**")
-                .requestMatchers("/v3/api-docs/**")
-                .requestMatchers("/configuration/**")
-                .requestMatchers("/swagger*/**")
-                .requestMatchers("/webjars/**")
-                .requestMatchers("/swagger-ui/**");
-    }
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(request ->
                 request.requestMatchers("/api/auth/**").permitAll()
