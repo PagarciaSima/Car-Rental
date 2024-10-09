@@ -1,19 +1,21 @@
 import { AuthService } from '../../services/auth/auth.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { Router } from '@angular/router';
 import { StorageService } from '../../services/storage/storage.service';
+import { Subscription } from 'rxjs';
 import { User } from '../../../models/user.model';
-import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit{
+export class LoginComponent implements OnInit, OnDestroy {
   isSpinning: boolean = false;
   loginForm!: FormGroup;
+  private loginSubscription: Subscription = new Subscription;
 
   constructor (
     private fb: FormBuilder,
@@ -26,12 +28,16 @@ export class LoginComponent implements OnInit{
     this.loginForm = this.fb.group({
       email: [null, [Validators.email, Validators.required]],
       password: [null, [Validators.required]]
-    })
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.loginSubscription.unsubscribe();
   }
 
   login() {
     console.log(this.loginForm.value);
-    this.authService.login(this.loginForm.value).subscribe({
+    this.loginSubscription = this.authService.login(this.loginForm.value).subscribe({
       next: (response)=> {
         if(response.userId != null) {
           const user: User = {

@@ -46,4 +46,9 @@ public class AdminServiceImpl implements AdminService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void deleteCar(Long id) {
+        carRepository.deleteById(id);
+    }
+
 }

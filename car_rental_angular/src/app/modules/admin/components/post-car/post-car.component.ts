@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AdminService } from '../../service/admin.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-post-car',
   templateUrl: './post-car.component.html',
   styleUrls: ['./post-car.component.scss']
 })
-export class PostCarComponent implements OnInit {
+export class PostCarComponent implements OnInit, OnDestroy {
+  private carsSubscription: Subscription = new Subscription;
   postCarForm!: FormGroup;
   isSpinning: boolean = false;
   selectedFile: File | null = null;
@@ -40,6 +42,12 @@ export class PostCarComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    if (this.carsSubscription) {
+      this.carsSubscription.unsubscribe();
+    }
+  }
+
   postCar(): void {
     console.log(this.postCarForm.value);
     this.isSpinning = true;
@@ -53,8 +61,7 @@ export class PostCarComponent implements OnInit {
     const carDto = JSON.stringify(this.postCarForm.value);
     formData.append('car', new Blob([carDto], { type: 'application/json' }));
 
-    console.log(formData);
-    this.adminService.postCar(formData).subscribe({
+    this.carsSubscription = this.adminService.postCar(formData).subscribe({
       next: (res) => {
         this.message.success("Car posted successfully", { nzDuration: 5000 });
         console.log(res);
@@ -69,7 +76,6 @@ export class PostCarComponent implements OnInit {
       }
     });
   }
-
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
