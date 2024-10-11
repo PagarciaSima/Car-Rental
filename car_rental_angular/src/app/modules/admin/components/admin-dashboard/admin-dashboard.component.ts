@@ -49,7 +49,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy{
   deleteCar(id: number) {
     console.log("ID", id);
     this.adminService.deleteCar(id).subscribe({
-      next: (res) => {
+      next: () => {
         this.cars = this.cars.filter(car => car.id !== id);
         this.message.success("Car deleted successfully", { nzDuration: 5000 });
       },

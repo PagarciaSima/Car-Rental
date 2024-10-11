@@ -55,4 +55,11 @@ public class AdminController {
         adminService.deleteCar(id);
         return ResponseEntity.ok(Collections.singletonMap("message", "Car deleted successfully."));
     }
+
+
+    @GetMapping("/car/{id}")
+    public ResponseEntity<CarDto> getCarById(@PathVariable Long id) {
+       CarDto carDto = adminService.getCarById(id);
+       return ResponseEntity.ok(carDto);
+    }
 }

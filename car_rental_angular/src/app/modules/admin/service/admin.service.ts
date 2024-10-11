@@ -33,6 +33,11 @@ export class AdminService {
     return this.http.get<CarDto[]>(url, { headers: this.getHeaders() });
   }
 
+  getCarById(id: number): Observable<CarDto> {
+    const url = this.getUrl(`car/${id}`);
+    return this.http.get<CarDto>(url, { headers: this.getHeaders() });
+  }
+
   deleteCar(id: number): Observable<string> {
     const url = this.getUrl(`car/${id}`);
     return this.http.delete<string>(url, { headers: this.getHeaders() });

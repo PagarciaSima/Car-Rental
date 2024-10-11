@@ -4,13 +4,12 @@ import com.carrenta.dto.CarDto;
 import com.carrenta.entity.Car;
 import com.carrenta.repository.CarRepository;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,6 +48,12 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void deleteCar(Long id) {
         carRepository.deleteById(id);
+    }
+
+    @Override
+    public CarDto getCarById(Long id) {
+        Optional<Car> optionalCar = carRepository.findById(id);
+        return optionalCar.map(Car :: getCarDto).orElse(null);
     }
 
 }

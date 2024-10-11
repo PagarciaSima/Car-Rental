@@ -1,9 +1,6 @@
 package com.carrenta.controller;
 
-import com.carrenta.dto.AuthenticationRequest;
-import com.carrenta.dto.AuthenticationResponse;
-import com.carrenta.dto.SignupRequest;
-import com.carrenta.dto.UserDto;
+import com.carrenta.dto.*;
 import com.carrenta.entity.User;
 import com.carrenta.enums.UserRole;
 import com.carrenta.repository.UserRepository;
