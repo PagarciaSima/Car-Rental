@@ -24,14 +24,12 @@ public class AdminController {
 
     @PostMapping(value = "/car", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> postCar(
-            @RequestPart("car") String carDtoJson,  // String para recibir el JSON
+            @RequestPart("car") String carDtoJson,
             @RequestPart(value = "image", required = false) MultipartFile image) {
         try {
-            // Convertir el JSON en un objeto CarDto usando ObjectMapper
             ObjectMapper objectMapper = new ObjectMapper();
             CarDto carDto = objectMapper.readValue(carDtoJson, CarDto.class);
 
-            // Pasar el CarDto y la imagen al servicio
             Car createdCar = adminService.postCar(carDto, image);
             if (createdCar != null) {
                 return ResponseEntity.status(HttpStatus.CREATED).body(createdCar.getCarDto());
@@ -62,4 +60,26 @@ public class AdminController {
        CarDto carDto = adminService.getCarById(id);
        return ResponseEntity.ok(carDto);
     }
+
+    @PutMapping(value = "/car/{carId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateCar(
+            @PathVariable Long carId,
+            @RequestPart("car") String carDtoJson,
+            @RequestPart(value = "image", required = false) MultipartFile image) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            CarDto carDto = objectMapper.readValue(carDtoJson, CarDto.class);
+
+            boolean updated = adminService.updateCar(carId, carDto, image);
+            if (updated) {
+                return ResponseEntity.ok(Collections.singletonMap("message", "Car updated successfully."));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Car not found.");
+            }
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while processing the request.");
+        }
+    }
+
 }

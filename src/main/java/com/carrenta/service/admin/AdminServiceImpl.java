@@ -56,4 +56,33 @@ public class AdminServiceImpl implements AdminService {
         return optionalCar.map(Car :: getCarDto).orElse(null);
     }
 
+    @Override
+    public boolean updateCar(Long carId, CarDto carDto, MultipartFile image) throws IOException {
+        Optional<Car> optionalCar = carRepository.findById(carId);
+
+        if (optionalCar.isPresent()) {
+            Car existingCar = optionalCar.get();
+
+            if (image != null && !image.isEmpty()) {
+                existingCar.setImage(image.getBytes());
+            } else if (carDto.getReturnedImage() != null) {
+                existingCar.setImage(carDto.getReturnedImage());
+            }
+
+            existingCar.setPrice(carDto.getPrice());
+            existingCar.setYear(carDto.getYear());
+            existingCar.setType(carDto.getType());
+            existingCar.setDescription(carDto.getDescription());
+            existingCar.setTransmission(carDto.getTransmission());
+            existingCar.setColor(carDto.getColor());
+            existingCar.setName(carDto.getName());
+            existingCar.setBrand(carDto.getBrand());
+
+            carRepository.save(existingCar);
+            return true;
+        }
+
+        return false;
+    }
+
 }
